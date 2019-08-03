@@ -15,82 +15,76 @@ import NotificationImportant from '@material-ui/icons/NotificationImportant';
 class ChatListComponent extends React.Component {
 
     render() {
-        const {classes, chats, chatIndex, userEmail} = this.props
 
-        if (chats.length > 0) {
+        const {classes} = this.props;
+
+        if (this.props.chats.length > 0) {
             return (
-                <main className={classes.root}>
-                    <Button variant='contained'
+                <div className={classes.root}>
+                    <Button variant="contained"
                             fullWidth
                             color='primary'
-                            className={classes.newChatBtn}
-                            onClick={this.newChat}>
+                            onClick={this.newChat}
+                            className={classes.newChatBtn}>
                         New Message
                     </Button>
                     <List>
                         {
-                            chats.map((_chat, _index) => {
+                            this.props.chats.map((_chat, _index) => {
                                 return (
                                     <div key={_index}>
                                         <ListItem onClick={() => this.selectChat(_index)}
                                                   className={classes.listItem}
-                                                  selected={chatIndex === _index}
-                                                  alignItems='flex-start'>
+                                                  selected={this.props.selectedChatIndex === _index}
+                                                  alignItems="flex-start">
                                             <ListItemAvatar>
                                                 <Avatar
-                                                    alt='Remy Sharp'>{_chat.users.filter(_user => _user !== userEmail)[0].split('')[0]}</Avatar>
+                                                    alt="Remy Sharp">{_chat.users.filter(_user => _user !== this.props.userEmail)[0].split('')[0]}</Avatar>
                                             </ListItemAvatar>
-                                            <ListItemText primary={_chat.users.filter(_user => _user !== userEmail)[0]}
-                                                          secondary={
-                                                              <React.Fragment>
-                                                                  <Typography component='span' color='textPrimary'>
-                                                                      {_chat.messages[_chat.messages.length - 1].message.substring(0, 30) + ' ...'}
-                                                                  </Typography>
-                                                              </React.Fragment>
-                                                          }>
-
-                                            </ListItemText>
+                                            <ListItemText
+                                                primary={_chat.users.filter(_user => _user !== this.props.userEmail)[0]}
+                                                secondary={
+                                                    <React.Fragment>
+                                                        <Typography component='span'
+                                                                    color='textPrimary'>
+                                                            {_chat.messages[_chat.messages.length - 1].message.substring(0, 30) + ' ...'}
+                                                        </Typography>
+                                                    </React.Fragment>
+                                                }/>
                                             {
-                                                _chat.receiverHasRead===false && !this.userIsSender(_chat) ?
-                                                    <ListItemIcon>
-                                                        <NotificationImportant className={classes.unreadMessage}></NotificationImportant>
-                                                    </ListItemIcon> : null
+                                                _chat.receiverHasRead === false && !this.userIsSender(_chat) ?
+                                                    <ListItemIcon><NotificationImportant
+                                                        className={classes.unreadMessage}></NotificationImportant></ListItemIcon> :
+                                                    null
                                             }
                                         </ListItem>
-                                        <Divider></Divider>
+                                        <Divider/>
                                     </div>
                                 )
                             })
                         }
                     </List>
-                </main>
+                </div>
             );
         } else {
             return (
-                <main className={classes.root}>
-                    <Button variant='contained'
+                <div className={classes.root}>
+                    <Button variant="contained"
                             fullWidth
                             color='primary'
-                            className={classes.newChatBtn}
-                            onClick={this.newChat}>New Message
+                            onClick={this.newChat}
+                            className={classes.newChatBtn}>
+                        New Message
                     </Button>
                     <List></List>
-                </main>
-            )
+                </div>
+            );
         }
     }
 
-    newChat = () => {
-        console.log("new chat click!")
-    };
-
-    selectChat = (index) => {
-        console.log("new chat click!",index);
-
-        this.props.selectChatFn(index);
-    };
-
-    userIsSender = (chat ) => chat.messages[chat.messages.length-1].sender===this.props.userEmail;
+    userIsSender = (chat) => chat.messages[chat.messages.length - 1].sender === this.props.userEmail;
+    newChat = () => this.props.newChatBtnFn();
+    selectChat = (index) => this.props.selectChatFn(index);
 }
 
 export default withStyles(styles)(ChatListComponent);
